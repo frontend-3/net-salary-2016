@@ -9,6 +9,6 @@ import {Component} from 'angular2/core';
 })
 
 export class Salary {
-  public grossSalary: number = 0;
+  public grossSalary: number;
 
 }

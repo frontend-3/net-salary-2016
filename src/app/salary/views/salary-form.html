@@ -1,20 +1,21 @@
-<form class="SalaryForm">
-  <ol class="Salary-questionList">
-    <li>
+<form class="SalaryForm" #salaryForm="ngForm">
+  <ol class="QuestionList">
+    <li class="QuestionList-item is-active">
       <span>
         <label>¿Cuál es su salario bruto?</label>
       </span>
-      <input [ngModel]="grossSalary" id="gross-salary" name="gross-salary">
+      <input [(ngModel)]="grossSalary" ngControl="grossSalary" id="gross-salary" name="gross-salary" required #name="ngForm">
+      <div class="ErrorMessage" [hidden]="grossSalary.valid">El ingreso bruto es requerido</div>
     </li>
   </ol>
-  <button class="submit" type="submit">Calcular</button>
-  <div class="controls">
-    <button class="next"></button>
-    <div class="progress"></div>
-    <span class="number">
-      <span class="number-current"></span>
-      <span class="number-total"></span>
+  <button class="SubmitButton" type="submit">Calcular</button>
+  <div class="Controls">
+    <button class="NextButton is-show"></button>
+    <div class="ProgressBar"></div>
+    <span class="Number">
+      <span class="Number-current">1</span>
+      <span class="Number-total">3</span>
     </span>
-    <span class="error-message"></span>
+    <span class="ErrorMessage"></span>
   </div>
 </form>
