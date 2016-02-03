@@ -46,30 +46,29 @@ module.exports = {
 
   module: {
     preLoaders: [
-      // { test: /\.ts$/, loader: 'tslint-loader', exclude: [ root('node_modules') ] },
-      // TODO(gdi2290): `exclude: [ root('node_modules/rxjs') ]` fixed with rxjs 5 beta.2 release
+      { test: /\.ts$/, loader: 'tslint-loader', exclude: [ root('node_modules') ] },
       { test: /\.js$/, loader: "source-map-loader", exclude: [ root('node_modules/rxjs') ] }
     ],
     loaders: [
-      // Support Angular 2 async routes via .async.ts
       { test: /\.async\.ts$/, loaders: ['es6-promise-loader', 'ts-loader'], exclude: [ /\.(spec|e2e)\.ts$/ ] },
 
-      // Support for .ts files.
       { test: /\.ts$/, loader: 'ts-loader', exclude: [ /\.(spec|e2e|async)\.ts$/ ] },
 
-      // Support for *.json files.
       { test: /\.json$/,  loader: 'json-loader' },
 
-      // Support for CSS as raw text
       { test: /\.css$/,   loader: 'raw-loader' },
 
-      // support for .html as raw text
-      { test: /\.html$/,  loader: 'raw-loader' }
+      { test: /\.html$/,  loader: 'raw-loader' },
 
-      // if you add a loader include the resolve file extension above
+      { test: /\.(png|woff|woff2|eot|ttf|svg)$/, loader: 'file-loader?limit=100' },
+
+      { test: /\.styl$/, loader: 'style-loader!css-loader!stylus-loader?resolve url' }
     ]
   },
-
+  stylus: {
+    use: [require('nib')()],
+    import: ['~nib/lib/nib/index.styl']
+  },
   plugins: [
     new webpack.optimize.OccurenceOrderPlugin(true),
     new webpack.optimize.CommonsChunkPlugin({ name: 'polyfills', filename: 'polyfills.bundle.js', minChunks: Infinity }),
@@ -120,6 +119,7 @@ function prepend(extensions, args) {
     }));
   }, ['']);
 }
+
 function rootNode(args) {
   args = Array.prototype.slice.call(arguments, 0);
   return root.apply(path, ['node_modules'].concat(args));
