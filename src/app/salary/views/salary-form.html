@@ -4,8 +4,8 @@
       <span>
         <label>¿Cuál es su salario bruto?</label>
       </span>
-      <input [(ngModel)]="grossSalary" ngControl="grossSalary" id="gross-salary" name="gross-salary" required #name="ngForm">
-      <div class="ErrorMessage" [hidden]="grossSalary.valid">El ingreso bruto es requerido</div>
+      <input [(ngModel)]="grossSalary" ngControl="grossSalary" required #grossSalaryEL="ngForm">
+      <div class="ErrorMessage" [hidden]="grossSalaryEL.valid">El ingreso bruto es requerido</div>
     </li>
   </ol>
   <button class="SubmitButton" type="submit">Calcular</button>
