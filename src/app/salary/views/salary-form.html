@@ -1,0 +1,20 @@
+<form class="SalaryForm">
+  <ol class="Salary-questionList">
+    <li>
+      <span>
+        <label>¿Cuál es su salario bruto?</label>
+      </span>
+      <input [ngModel]="grossSalary" id="gross-salary" name="gross-salary">
+    </li>
+  </ol>
+  <button class="submit" type="submit">Calcular</button>
+  <div class="controls">
+    <button class="next"></button>
+    <div class="progress"></div>
+    <span class="number">
+      <span class="number-current"></span>
+      <span class="number-total"></span>
+    </span>
+    <span class="error-message"></span>
+  </div>
+</form>

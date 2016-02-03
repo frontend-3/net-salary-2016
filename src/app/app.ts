@@ -1,13 +1,10 @@
 import {Component} from 'angular2/core';
-import {TaxComponent} from './tax/scripts/tax.component';
-import {TaxDetailService} from './tax/scripts/tax.detail.service';
-import {ScaleService} from './scale/scripts/scale.service';
+import {Salary} from './salary/scripts/salary';
 
 @Component({
-  selector: 'app',
-  directives: [TaxComponent],
-  template: '<tax-component></tax-component>',
-  providers: [TaxDetailService]
+  selector    : 'app',
+  template    : '<salary></salary>',
+  directives  : [Salary]
 })
 
 export class App {
