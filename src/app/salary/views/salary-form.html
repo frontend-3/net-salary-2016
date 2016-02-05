@@ -10,7 +10,7 @@
       <span>
         <label>¿Recibe Asignación Familiar?</label>
       </span>
-      <input type="checkbox" [(ngModel)]="salary.hasAssigmentFamiliar" ngControl="salary.hasFamiliarAssigment" required #hasFamiliarAssigment="ngForm">
+      <input [(ngModel)]="salary.hasAssigmentFamiliar" ngControl="salary.hasFamiliarAssigment" required #hasFamiliarAssigment="ngForm">
   </li>
   </ol>
   <button class="SubmitButton" type="submit">Calcular</button>
