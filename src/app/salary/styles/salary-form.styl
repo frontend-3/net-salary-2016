@@ -12,6 +12,11 @@
   max-width 860px
   font-size 2.5em
 
+  &.is-change
+    .QuestionList
+      .QuestionList-item
+        animation moveUpFromDown 0.4s both
+
   .SubmitButton
     display none
 
@@ -21,34 +26,33 @@
   padding 0
   position relative
 
-  &:before
-    content ''
-    background rgba(0,0,0,.1)
-    position absolute
-    left 0
-    bottom 0
-    width 100%
-    height 2.35em
-    position absolute
-    width 100%
-
   .QuestionList-item
     z-index 100
     position relative
+    visibility hidden
     height 0
     transition visibility 0s .4s, height 0s .4s
 
     &.is-active
       height auto
-      transition none
       visibility visible
+      transition none
+
+      label
+        transform translateY(0)
+        transition none
 
       input
         opacity 1
+  span
+    overflow hidden
+    display block
 
   label
     color rgba(0, 0, 0, 0.45098)
     display block
+    transform translateY(-100%)
+    transition transform 0.4s
 
   input
     background transparent
@@ -57,7 +61,7 @@
     padding 0.5em 1em 0.5em 0.7em
     width calc(100% - 2em)
     border none
-    background transparent
+    background rgba(0,0,0,.1)
     color rgba(0,0,0,0.8)
     font-size 1em
     line-height 1
@@ -148,3 +152,11 @@
       font-family 'icomoon'
       line-height 2
       speak none
+
+
+@keyframes moveUpFromDown
+  from
+    transform translateY(100%)
+
+  to
+    transform translateY(0)

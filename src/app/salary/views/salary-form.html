@@ -6,6 +6,12 @@
       </span>
       <input [(ngModel)]="salary.grossSalary" ngControl="salary.grossSalary" required #grossSalary="ngForm">
     </li>
+    <li class="QuestionList-item">
+      <span>
+        <label>¿Recibe Asignación Familiar?</label>
+      </span>
+      <input type="checkbox" [(ngModel)]="salary.hasAssigmentFamiliar" ngControl="salary.hasFamiliarAssigment" required #hasFamiliarAssigment="ngForm">
+  </li>
   </ol>
   <button class="SubmitButton" type="submit">Calcular</button>
   <div class="Controls">
