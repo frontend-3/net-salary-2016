@@ -7,6 +7,7 @@ var path = require('path');
 var webpack = require('webpack');
 var CopyWebpackPlugin  = require('copy-webpack-plugin');
 var HtmlWebpackPlugin  = require('html-webpack-plugin');
+var WebpackNotifierPlugin = require('webpack-notifier');
 var ENV = process.env.ENV = process.env.NODE_ENV = 'development';
 
 var metadata = {
@@ -70,6 +71,7 @@ module.exports = {
     import: ['~nib/lib/nib/index.styl']
   },
   plugins: [
+    new WebpackNotifierPlugin(),
     new webpack.optimize.OccurenceOrderPlugin(true),
     new webpack.optimize.CommonsChunkPlugin({ name: 'polyfills', filename: 'polyfills.bundle.js', minChunks: Infinity }),
     // static assets
