@@ -1,15 +1,15 @@
-import {Component} from 'angular2/core';
+import {Component, OnInit} from 'angular2/core';
 import {Salary} from './salary';
+import {RouteParams, Router} from 'angular2/router';
 
 @Component({
-  selector: 'salary',
   template: require('../views/salary-form.html'),
   styles  : [
     require('../styles/salary-form.styl').toString()
   ]
 })
 
-export class SalaryComponent {
+export class SalaryComponent implements OnInit {
   salary = new Salary();
   numOfQuestions: number;
   progressBar: HTMLElement;
@@ -18,12 +18,14 @@ export class SalaryComponent {
   transEndEventName: string = 'webkitTransitionEnd';
   _this: Object = this;
 
+
   ngOnInit() {
     this.progressBar = (<HTMLElement> document.querySelector('.ProgressBar'));
     this.numOfQuestions = 3;
-    this.currentQuestion = 3;
+    this.currentQuestion = parseInt(this._routeParams.get('id'));
     this.form = (<HTMLElement> document.querySelector('.SalaryForm'));
     this.setupEvents();
+    console.log('test');
   }
 
   onNextQuestion() {
@@ -50,4 +52,9 @@ export class SalaryComponent {
     this.progressBar.style.width = this.currentQuestion * (100 /  this.numOfQuestions) + '%';
   }
 
+  constructor(
+    private _router: Router,
+    private _routeParams: RouteParams
+  ) {
+  }
 }
