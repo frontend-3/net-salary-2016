@@ -14,8 +14,9 @@
 
   &.is-change
     .QuestionList
-      .QuestionList-item
-        animation moveUpFromDown 0.4s both
+      .QuestionList-item.is-active
+        label
+          animation moveUpFromDown 0.4s both
 
   .SubmitButton
     display none
@@ -28,6 +29,12 @@
 
   &:before
     background rgba(0,0,0,.1)
+    content ''
+    position absolute
+    left 0
+    bottom 0
+    width 100%
+    height 2.35em
 
   .QuestionList-item
     z-index 100
