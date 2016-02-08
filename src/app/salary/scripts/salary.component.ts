@@ -1,6 +1,6 @@
 import {Component, OnInit} from 'angular2/core';
-import {Salary} from './salary';
 import {RouteParams, Router} from 'angular2/router';
+import {Salary} from './salary';
 
 @Component({
   template: require('../views/salary-form.html'),
@@ -10,51 +10,97 @@ import {RouteParams, Router} from 'angular2/router';
 })
 
 export class SalaryComponent implements OnInit {
-  salary = new Salary();
-  numOfQuestions: number;
-  progressBar: HTMLElement;
-  currentQuestion: number;
-  form: HTMLElement;
-  transEndEventName: string = 'webkitTransitionEnd';
-  _this: Object = this;
-
-
-  ngOnInit() {
-    this.progressBar = (<HTMLElement> document.querySelector('.ProgressBar'));
-    this.numOfQuestions = 3;
-    this.currentQuestion = parseInt(this._routeParams.get('id'));
-    this.form = (<HTMLElement> document.querySelector('.SalaryForm'));
-    this.setupEvents();
-    console.log('test');
-  }
-
-  onNextQuestion() {
-    this.updateProgressBar();
-    let currentQuestion =  (<HTMLElement> document.querySelector('.QuestionList-item.is-active'));
-    let nextQuestion = (<HTMLElement> currentQuestion.nextElementSibling);
-    this.form.classList.add('is-change');
-    currentQuestion.classList.remove('is-active');
-    nextQuestion.classList.add('is-active');
-  }
-
-  onEndTransitionFn() {
-    this.form.classList.remove('is-change');
-  }
-
-  setupEvents() {
-    this.progressBar.addEventListener(
-        this.transEndEventName,
-        () => this.form.classList.remove('is-change')
-    );
-  }
-
-  updateProgressBar() {
-    this.progressBar.style.width = this.currentQuestion * (100 /  this.numOfQuestions) + '%';
-  }
+  public salary               = new Salary();
+  public events               : {};
+  private _catchDom           : () => void;
+  private _suscribeEvents     : () => void;
+  private _initialize         : () => void;
+  private _numOfQuestions     : number;
+  private _numCurrentQuestion : number;
+  private _currentQuestion    : HTMLElement;
+  private _fn                 : {
+    updateProgressBar         : () => void
+  };
+  private _dom                : {
+    progressBar : HTMLElement,
+    form        : HTMLElement
+  } = <any> {};
+  private _settings           : {
+    progressBar         : string,
+    questionItem        : string,
+    questionItemActive  : string,
+    form                : string,
+    transitionEventName : string
+  };
 
   constructor(
-    private _router: Router,
-    private _routeParams: RouteParams
+    private _router       : Router,
+    private _routeParams  : RouteParams
   ) {
+    this.initModule();
+  }
+
+  initModule() {
+    this._settings = {
+      progressBar         : '.ProgressBar',
+      questionItem        : '.QuestionList-item',
+      questionItemActive  : '.QuestionList-item.is-active',
+      form                : '.SalaryForm',
+      transitionEventName : 'webkitTransitionEnd'
+    };
+
+    this._catchDom = () => {
+      console.log(this._dom);
+      this._dom = {
+        progressBar : (<HTMLElement> document.querySelector(this._settings.progressBar)),
+        form        : (<HTMLElement> document.querySelector(this._settings.form))
+      };
+    };
+
+    this._suscribeEvents = () => {
+      this._dom.progressBar.addEventListener(
+          this._settings.transitionEventName,
+          () => this._dom.form.classList.remove('is-change')
+      );
+    };
+
+    this.events = {
+      onNextQuestion: () => {
+        let nextQuestion;
+
+        this._currentQuestion =  (<HTMLElement> document.querySelector(
+                                                          this._settings.
+                                                          questionItemActive));
+        nextQuestion          = (<HTMLElement> this._currentQuestion.nextElementSibling);
+        this._fn.updateProgressBar();
+        this._dom.form.classList.add('is-change');
+        this._currentQuestion.classList.remove('is-active');
+        nextQuestion.classList.add('is-active');
+      },
+      onEndTransitionFn: () => {
+        this._dom.form.classList.remove('is-change');
+      }
+    };
+
+    this._fn = {
+      updateProgressBar : () => {
+        this._dom.progressBar.style.width = this._numCurrentQuestion * (
+                                              100 /  this._numOfQuestions
+                                            ) + '%';
+      }
+    };
+
+    this._initialize = () => {
+      this._numOfQuestions      = (document.querySelectorAll(
+                                                this._settings.questionItem
+                                                )).length;
+      this._numCurrentQuestion  = parseInt(this._routeParams.get('id'));
+      this._catchDom();
+      this._suscribeEvents();
+    };
+  }
+
+  ngOnInit() {
+    this._initialize();
   }
 }
