@@ -13,13 +13,13 @@ import {ScaleService} from './scale/scripts/scale.service';
 @RouteConfig ([
     {
       path: '/preguntas/:id',
-      name: 'Preguntas',
+      name: 'Questions',
       component: SalaryComponent
     },
      {
       path: '/',
       name: 'Home',
-      redirectTo: ['/Preguntas', {id: 1}]
+      redirectTo: ['/Questions', {id: 1}]
     }
 ])
 
