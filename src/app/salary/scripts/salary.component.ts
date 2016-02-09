@@ -25,7 +25,8 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
   public fn                   : {
                                   updateProgressBar      : () => void,
                                   createSalaryForm       : () => void,
-                                  validQuestions         : () => boolean
+                                  validQuestions         : () => boolean,
+                                  renderCurrentQuestion  : () => void
                                 };
   private _catchDom           : () => void;
   private _afterCatchDom      : () => void;
@@ -81,6 +82,7 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
       this._numOfQuestions      = this._dom.questionItems.length;
       this._numCurrentQuestion  = parseInt(this._routeParams.get('id'));
       this.fn.createSalaryForm();
+      this.fn.renderCurrentQuestion();
     };
 
     this._suscribeEvents = () => {
@@ -135,6 +137,17 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
         }
 
         return control.valid;
+      },
+      renderCurrentQuestion: () => {
+        this.fn.updateProgressBar();
+        this._dom.form.classList.add('is-change');
+        this._dom.currentQuestion.classList.remove('is-active');
+        let renderQuestion = (<HTMLElement> document.querySelector(
+                                                this._settings.questionItems +
+                                                '[data-step="' +
+                                                this._numCurrentQuestion +
+                                                '"]'));
+        renderQuestion.classList.add('is-active');
       }
     };
 

@@ -1,12 +1,12 @@
 <form class="SalaryForm" [ngFormModel] = "salaryForm">
   <ol class="QuestionList">
-    <li class="QuestionList-item is-active">
+    <li class="QuestionList-item is-active" data-step="1">
       <span>
         <label>¿Cuál es su salario bruto?</label>
       </span>
       <input name="grossSalary" [(ngModel)]="salary.grossSalary" ngControl="grossSalary" >
     </li>
-    <li class="QuestionList-item">
+    <li class="QuestionList-item" data-step="2">
       <span>
         <label>¿Recibe Asignación Familiar?</label>
       </span>
