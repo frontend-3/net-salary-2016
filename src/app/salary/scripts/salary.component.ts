@@ -34,6 +34,7 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
   private _initialize         : () => void;
   private _numOfQuestions     : number;
   private _numCurrentQuestion : number;
+  private _prevQuestion       : HTMLElement;
   private _dom                : {
                                   progressBar     : HTMLElement,
                                   form            : HTMLElement,
@@ -89,11 +90,7 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
       this._dom.progressBar.addEventListener(
           this._settings.transitionEventName,
           () => {
-            let nextId;
-
-            nextId = this._numCurrentQuestion + 1;
             this._dom.form.classList.remove('is-change');
-            this._router.navigate( ['Questions', { id: nextId }] );
           }
       );
     };
@@ -101,6 +98,8 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
     this.events = {
       onNextQuestion: () => {
         if (this.fn.validQuestions()) {
+          let nextId = this._numCurrentQuestion + 1;
+          this._router.navigate( ['Questions', { id: nextId }]);
           this.fn.updateProgressBar();
           this._dom.form.classList.add('is-change');
           this._dom.currentQuestion.classList.remove('is-active');
@@ -111,7 +110,7 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
 
     this.fn = {
       updateProgressBar : () => {
-        this._dom.progressBar.style.width = this._numCurrentQuestion * (
+        this._dom.progressBar.style.width = (this._numCurrentQuestion - 1) * (
                                               100 /  this._numOfQuestions
                                             ) + '%';
       },
@@ -141,7 +140,11 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
       renderCurrentQuestion: () => {
         this.fn.updateProgressBar();
         this._dom.form.classList.add('is-change');
-        this._dom.currentQuestion.classList.remove('is-active');
+        if (this._prevQuestion) {
+          this._prevQuestion.classList.remove('is-active');
+        } else {
+          this._dom.currentQuestion.classList.remove('is-active');
+        }
         let renderQuestion = (<HTMLElement> document.querySelector(
                                                 this._settings.questionItems +
                                                 '[data-step="' +
@@ -167,6 +170,12 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
   }
 
   routerOnReuse(next: ComponentInstruction, prev: ComponentInstruction) {
+    this._prevQuestion = (<HTMLElement> document.querySelector(
+                                                this._settings.questionItems +
+                                                '[data-step="' +
+                                                prev.params['id'] +
+                                                '"]'));
     this._numCurrentQuestion = parseInt(next.params['id']);
+    this.fn.renderCurrentQuestion();
   }
 }
