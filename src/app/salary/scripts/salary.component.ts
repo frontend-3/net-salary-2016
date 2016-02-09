@@ -1,5 +1,5 @@
 import {Component, OnInit} from 'angular2/core';
-import {RouteParams, Router} from 'angular2/router';
+import {RouteParams, Router, CanReuse, OnReuse, ComponentInstruction} from 'angular2/router';
 import {Salary} from './salary';
 
 @Component({
@@ -9,7 +9,7 @@ import {Salary} from './salary';
   ]
 })
 
-export class SalaryComponent implements OnInit {
+export class SalaryComponent implements OnInit, CanReuse, OnReuse {
   public salary               = new Salary();
   public events               : {};
   private _catchDom           : () => void;
@@ -89,9 +89,6 @@ export class SalaryComponent implements OnInit {
         this._dom.form.classList.add('is-change');
         this._dom.currentQuestion.classList.remove('is-active');
         this._dom.nextQuestion.classList.add('is-active');
-      },
-      onEndTransitionFn: () => {
-        this._dom.form.classList.remove('is-change');
       }
     };
 
@@ -107,11 +104,18 @@ export class SalaryComponent implements OnInit {
       this._catchDom();
       this._afterCatchDom();
       this._suscribeEvents();
-      console.log(this._routeParams.get('id'));
     };
   }
 
   ngOnInit() {
     this._initialize();
+  }
+
+  routerCanReuse(next: ComponentInstruction, prev: ComponentInstruction) {
+    return true;
+  }
+
+  routerOnReuse(next: ComponentInstruction, prev: ComponentInstruction) {
+    this._numCurrentQuestion = next.params['id'];
   }
 }
