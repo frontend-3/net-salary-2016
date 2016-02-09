@@ -1,40 +1,52 @@
 import {Component, OnInit} from 'angular2/core';
 import {RouteParams, Router, CanReuse, OnReuse, ComponentInstruction} from 'angular2/router';
+import {
+	FormBuilder,
+	Validators,
+	Control,
+	ControlGroup,
+	FORM_DIRECTIVES
+
+} from 'angular2/common';
 import {Salary} from './salary';
 
 @Component({
   template: require('../views/salary-form.html'),
   styles  : [
     require('../styles/salary-form.styl').toString()
-  ]
+  ],
+  directives : [FORM_DIRECTIVES]
 })
 
 export class SalaryComponent implements OnInit, CanReuse, OnReuse {
+  public salaryForm           : ControlGroup;
   public salary               = new Salary();
   public events               : {};
+  public fn                   : {
+                                  updateProgressBar      : () => void,
+                                  createSalaryForm       : () => void,
+                                  validQuestions         : () => boolean
+                                };
   private _catchDom           : () => void;
   private _afterCatchDom      : () => void;
   private _suscribeEvents     : () => void;
   private _initialize         : () => void;
   private _numOfQuestions     : number;
   private _numCurrentQuestion : number;
-  private _fn                 : {
-    updateProgressBar         : () => void
-  };
   private _dom                : {
-    progressBar     : HTMLElement,
-    form            : HTMLElement,
-    questionItems   : any,
-    currentQuestion : HTMLElement,
-    nextQuestion    : HTMLElement
-  } = <any> {};
+                                  progressBar     : HTMLElement,
+                                  form            : HTMLElement,
+                                  questionItems   : any,
+                                  currentQuestion : HTMLElement,
+                                  nextQuestion    : HTMLElement
+                                } = <any> {};
   private _settings            : {
-    progressBar         : string,
-    questionItems       : string,
-    currentQuestion     : string,
-    form                : string,
-    transitionEventName : string
-  };
+                                  progressBar         : string,
+                                  questionItems       : string,
+                                  currentQuestion     : string,
+                                  form                : string,
+                                  transitionEventName : string
+                                 };
 
   constructor(
     private _router       : Router,
@@ -68,6 +80,7 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
     this._afterCatchDom = () => {
       this._numOfQuestions      = this._dom.questionItems.length;
       this._numCurrentQuestion  = parseInt(this._routeParams.get('id'));
+      this.fn.createSalaryForm();
     };
 
     this._suscribeEvents = () => {
@@ -85,18 +98,43 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
 
     this.events = {
       onNextQuestion: () => {
-        this._fn.updateProgressBar();
-        this._dom.form.classList.add('is-change');
-        this._dom.currentQuestion.classList.remove('is-active');
-        this._dom.nextQuestion.classList.add('is-active');
+        if (this.fn.validQuestions()) {
+          this.fn.updateProgressBar();
+          this._dom.form.classList.add('is-change');
+          this._dom.currentQuestion.classList.remove('is-active');
+          this._dom.nextQuestion.classList.add('is-active');
+        }
       }
     };
 
-    this._fn = {
+    this.fn = {
       updateProgressBar : () => {
         this._dom.progressBar.style.width = this._numCurrentQuestion * (
                                               100 /  this._numOfQuestions
                                             ) + '%';
+      },
+      createSalaryForm : () => {
+        this.salaryForm = new ControlGroup({
+          grossSalary           : new Control('', Validators.required),
+          hasFamiliarAssigment  : new Control('', Validators.required),
+          afp                   : new Control('', Validators.required)
+        });
+      },
+      validQuestions: () => {
+        let control = null;
+        switch (this._numCurrentQuestion) {
+          case 1:
+            control = this.salaryForm.controls['grossSalary'];
+            break;
+          case 2:
+            control = this.salaryForm.controls['hasFamiliarAssigment'];
+            break;
+          case 3:
+            control = this.salaryForm.controls['afp'];
+            break;
+        }
+
+        return control.valid;
       }
     };
 
@@ -116,6 +154,6 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
   }
 
   routerOnReuse(next: ComponentInstruction, prev: ComponentInstruction) {
-    this._numCurrentQuestion = next.params['id'];
+    this._numCurrentQuestion = parseInt(next.params['id']);
   }
 }

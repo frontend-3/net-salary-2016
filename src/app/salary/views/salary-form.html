@@ -1,16 +1,16 @@
-<form class="SalaryForm" #salaryForm="ngForm">
+<form class="SalaryForm" [ngFormModel] = "salaryForm">
   <ol class="QuestionList">
     <li class="QuestionList-item is-active">
       <span>
         <label>¿Cuál es su salario bruto?</label>
       </span>
-      <input [(ngModel)]="salary.grossSalary" ngControl="salary.grossSalary" required #grossSalary="ngForm">
+      <input name="grossSalary" [(ngModel)]="salary.grossSalary" ngControl="grossSalary" >
     </li>
     <li class="QuestionList-item">
       <span>
         <label>¿Recibe Asignación Familiar?</label>
       </span>
-      <input [(ngModel)]="salary.hasAssigmentFamiliar" ngControl="salary.hasFamiliarAssigment" required #hasFamiliarAssigment="ngForm">
+      <input name="hasFamiliarAssigment" [(ngModel)]="salary.hasAssigmentFamiliar" ngControl="hasFamiliarAssigment">
   </li>
   </ol>
   <button class="SubmitButton" type="submit">Calcular</button>
@@ -21,6 +21,6 @@
       <span class="Number-current">1</span>
       <span class="Number-total">3</span>
     </span>
-    <div class="ErrorMessage" [hidden]="grossSalary.valid"> Ingrese un monto</div>
+    <div class="ErrorMessage" [hidden]="fn.validQuestions()"> Ingrese un monto</div>
   </div>
 </form>
