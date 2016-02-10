@@ -97,10 +97,7 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
       this._dom.progressBar.addEventListener(
           this._settings.transitionEventName,
           () => {
-            console.log('transition end')
             this._dom.form.classList.remove('is-change');
-            this._dom.form.className = this._dom.form.className.replace('u-upFromDown', '');
-            this._dom.form.className = this._dom.form.className.replace('u-downFromUp', '');
           }
       );
     };
@@ -112,7 +109,6 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
           this._router.navigate( ['Questions', { id: nextId }]);
           this.fn.updateProgressBar();
           this._dom.form.classList.add('is-change');
-          this._dom.form.classList.add('u-upFromDown');
           this._dom.currentQuestion.classList.remove('is-active');
           this._dom.nextQuestion.classList.add('is-active');
         }
@@ -154,14 +150,11 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
 
         this._dom.form.classList.add('is-change');
 
-        if (this.prevURL === this.currentURL) {
-          this._dom.form.classList.add('u-downFromUp');
+        if (this._prevQuestion) {
           this._prevQuestion.classList.remove('is-active');
         } else {
-          this._dom.form.classList.add('u-upFromDown');
           this._dom.currentQuestion.classList.remove('is-active');
         }
-
         renderQuestion = (<HTMLElement> document.querySelector(
                                                 this._settings.questionItems +
                                                 '[data-step="' +
@@ -194,8 +187,6 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
                                                 prev.params['id'] +
                                                 '"]'));
     this._numCurrentQuestion  = parseInt(next.params['id']);
-    this.currentURL           = window.location.href;
     this.fn.renderCurrentQuestion();
-    this.prevURL              = this.currentURL;
   }
 }

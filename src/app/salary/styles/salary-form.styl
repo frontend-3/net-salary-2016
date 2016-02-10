@@ -12,18 +12,11 @@
   max-width 860px
   font-size 2.5em
 
-  &.is-change.u-upFromDown
+  &.is-change
     .QuestionList
       .QuestionList-item.is-active
         label
           animation moveUpFromDown 0.4s both
-
-
-  &.is-change.u-downFromUp
-    .QuestionList
-      .QuestionList-item.is-active
-        label
-          animation moveDownFromUp 0.4s both
 
   .SubmitButton
     display none
@@ -177,10 +170,3 @@
   to
     transform translateY(0)
 
-
-@keyframes moveDownFromUp
-  from
-    transform translateY(0%)
-
-  to
-    transform translateY(-100%)
