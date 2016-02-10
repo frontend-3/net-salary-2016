@@ -28,6 +28,8 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
                                   validQuestions         : () => boolean,
                                   renderCurrentQuestion  : () => void
                                 };
+  public  prevURL             : string;
+  public  currentURL          : string;
   private _catchDom           : () => void;
   private _afterCatchDom      : () => void;
   private _suscribeEvents     : () => void;
@@ -82,15 +84,23 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
     this._afterCatchDom = () => {
       this._numOfQuestions      = this._dom.questionItems.length;
       this._numCurrentQuestion  = parseInt(this._routeParams.get('id'));
+      this.currentURL           = window.location.href;
       this.fn.createSalaryForm();
       this.fn.renderCurrentQuestion();
+     this._dom.form.classList.remove('is-change');
+        this._dom.form.className = this._dom.form.className.replace('u-upFromDown', '');
+            this._dom.form.className = this._dom.form.className.replace('u-downFromUp', '');
     };
 
     this._suscribeEvents = () => {
+      console.log('setup events')
       this._dom.progressBar.addEventListener(
           this._settings.transitionEventName,
           () => {
+            console.log('transition end')
             this._dom.form.classList.remove('is-change');
+            this._dom.form.className = this._dom.form.className.replace('u-upFromDown', '');
+            this._dom.form.className = this._dom.form.className.replace('u-downFromUp', '');
           }
       );
     };
@@ -102,6 +112,7 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
           this._router.navigate( ['Questions', { id: nextId }]);
           this.fn.updateProgressBar();
           this._dom.form.classList.add('is-change');
+          this._dom.form.classList.add('u-upFromDown');
           this._dom.currentQuestion.classList.remove('is-active');
           this._dom.nextQuestion.classList.add('is-active');
         }
@@ -110,9 +121,10 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
 
     this.fn = {
       updateProgressBar : () => {
-        this._dom.progressBar.style.width = (this._numCurrentQuestion - 1) * (
+        this._dom.progressBar.style.width = (this._numCurrentQuestion) * (
                                               100 /  this._numOfQuestions
                                             ) + '%';
+        console.log('update events')
       },
       createSalaryForm : () => {
         this.salaryForm = new ControlGroup({
@@ -138,26 +150,32 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
         return control.valid;
       },
       renderCurrentQuestion: () => {
-        this.fn.updateProgressBar();
+        let renderQuestion;
+
         this._dom.form.classList.add('is-change');
-        if (this._prevQuestion) {
+
+        if (this.prevURL === this.currentURL) {
+          this._dom.form.classList.add('u-downFromUp');
           this._prevQuestion.classList.remove('is-active');
         } else {
+          this._dom.form.classList.add('u-upFromDown');
           this._dom.currentQuestion.classList.remove('is-active');
         }
-        let renderQuestion = (<HTMLElement> document.querySelector(
+
+        renderQuestion = (<HTMLElement> document.querySelector(
                                                 this._settings.questionItems +
                                                 '[data-step="' +
                                                 this._numCurrentQuestion +
                                                 '"]'));
         renderQuestion.classList.add('is-active');
+        this.fn.updateProgressBar();
       }
     };
 
     this._initialize = () => {
       this._catchDom();
-      this._afterCatchDom();
       this._suscribeEvents();
+      this._afterCatchDom();
     };
   }
 
@@ -175,7 +193,9 @@ export class SalaryComponent implements OnInit, CanReuse, OnReuse {
                                                 '[data-step="' +
                                                 prev.params['id'] +
                                                 '"]'));
-    this._numCurrentQuestion = parseInt(next.params['id']);
+    this._numCurrentQuestion  = parseInt(next.params['id']);
+    this.currentURL           = window.location.href;
     this.fn.renderCurrentQuestion();
+    this.prevURL              = this.currentURL;
   }
 }
